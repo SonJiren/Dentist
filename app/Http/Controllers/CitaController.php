@@ -55,17 +55,9 @@ class CitaController extends Controller
             'hora' => $request->hora,
             'costo' => $request->costo,
         ]);
-        $horaCita = Carbon::createFromFormat('Y-m-d H:i', $cita->fecha . ' ' . $cita->hora);
-        $horaEnvio = $horaCita->subMinutes(5);
+        $cita = Cita::create($request->all());
 
-        EnviarRecordatorioCita::dispatch($cita)->delay($horaEnvio);
-
-
-        try {
-            Mail::to('agitokanoh657@gmail.com')->send(new CitaCreada($cita));
-        } catch (\Exception $e) {
-            Log::error('Error al enviar correo: '.$e->getMessage());
-        }
+    Mail::to($cita->cliente->correo)->send(new CitaCreada($cita));
 
         return redirect()->route('citas.index')->with('success', 'Cita creada exitosamente.');
     }

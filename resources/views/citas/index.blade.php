@@ -37,7 +37,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $cita->costo }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('citas.edit', $cita->id) }}" class="px-4 py-2 text-sm font-bold text-white bg-green-500 border border-green-700 rounded hover:bg-green-700">Editar</a>
-
+                            
                                                                             <!-- Botón para mostrar el modal -->
                                         <button onclick="toggleModal('delete-modal-{{ $cita->id }}')" class="px-4 py-2 text-sm font-bold text-white bg-red-500 border border-red-700 rounded hover:bg-red-700">
                                             Borrar
@@ -67,7 +67,7 @@
                                                 }
                                             }
                                         </script>
-                                    </td>
+                                    </td> </td>
                                 </tr>
                             @endforeach
                         </tbody>
