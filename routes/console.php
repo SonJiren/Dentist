@@ -12,21 +12,24 @@ use App\Jobs\EnviarRecordatorioCita;
 })->purpose('Display an inspiring quote')->hourly();
 
  */
-Artisan::command('cita {id}', function ($id) {
-    $cita = Cita::find($id);
 
-    if ($cita) {
-        // Convertir la hora de la cita
-        $horaCita = Carbon::createFromFormat('Y-m-d H:i:s', $cita->hora_cita);
-        $horaEnvio = $horaCita->subMinutes(5); // 5 minutos antes
+ Artisan::command('RecordatorioCita', function () {
+    $now = Carbon::now();
+    $destinatarios = ['agitokanoh657@gmail.com'];
 
-        // Enviar el correo de inmediato a tu Gmail
-        Mail::to('agitokanoh657@gmail.com')->send(new CitaCreada($cita));
+    // Obtener citas que necesitan recordatorio (5 minutos antes)
+    $citas = Cita::whereDate('fecha', $now->toDateString())
+    ->whereTime('hora', $now->copy()->addMinutes(5)->format('H:i'))
+    ->get();
 
-        EnviarRecordatorioCita::dispatch($cita)->delay($horaEnvio);
+    // Enviar recordatorio solo si hay citas
+    if ($citas->isNotEmpty()) {
+        foreach ($citas as $cita) {
+            Mail::bcc($destinatarios)->send(new CitaCreada($cita));
+        }
 
-        $this->info("Recordatorio programado y correo enviado.");
+        $this->info('Recordatorios de citas enviados con éxito.');
     } else {
-        $this->error("Cita con ID {$id} no encontrada.");
+        $this->info('No hay citas pendientes en este momento.');
     }
-})->purpose('Enviar recordatorio de cita 5 minutos antes de la hora establecida.')->everyMinute();
+})->purpose('Enviar recordatorio 5 minutos antes de la cita')->everyMinute();

@@ -14,18 +14,21 @@ class CitaCreada extends Mailable implements ShouldQueue
 
     public $cita;
 
+    /**
+     * Create a new message instance.
+     *
+     * @param $cita
+     */
     public function __construct($cita)
     {
         $this->cita = $cita;
     }
 
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.recordatorio'
-        );
-    }
-
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
         return $this->view('emails.recordatorio')
