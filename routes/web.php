@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\TratamientosController;
 use App\Http\Controllers\CitaController;
-use Illuminate\Support\Facades\Mail;
-use App\Models\Cita;
 
 Route::get('/', function () {
     return view('welcome');

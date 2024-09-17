@@ -37,13 +37,12 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $cita->costo }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('citas.edit', $cita->id) }}" class="px-4 py-2 text-sm font-bold text-white bg-green-500 border border-green-700 rounded hover:bg-green-700">Editar</a>
-                            
+
                                                                             <!-- Botón para mostrar el modal -->
                                         <button onclick="toggleModal('delete-modal-{{ $cita->id }}')" class="px-4 py-2 text-sm font-bold text-white bg-red-500 border border-red-700 rounded hover:bg-red-700">
                                             Borrar
                                         </button>
 
-                                        <!-- Modal de confirmación -->
                                         <div id="delete-modal-{{ $cita->id }}" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 overflow-auto bg-black bg-opacity-50">
                                             <div class="p-6 bg-white rounded-lg shadow-lg">
                                                 <h2 class="mb-4 text-lg font-bold">Confirmar eliminación</h2>
