@@ -2,39 +2,46 @@
 
 namespace App\Mail;
 
+use App\Models\Cita;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailables\Content;
+use Carbon\Carbon;
 
-class CitaCreada extends Mailable implements ShouldQueue
+class CitaCreada extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $cita;
 
     /**
-     * Create a new message instance.
+     * Crea una nueva instancia de mensaje.
      *
-     * @param $cita
+     * @param Cita $cita
      */
-    public function __construct($cita)
+    public function __construct(Cita $cita)
     {
         $this->cita = $cita;
     }
 
     /**
-     * Build the message.
+     * Construye el mensaje.
      *
      * @return $this
      */
     public function build()
     {
+        // Convertir la fecha y hora a objetos Carbon
+        $fecha = Carbon::parse($this->cita->fecha);
+        $hora = Carbon::parse($this->cita->hora);
+
         return $this->view('emails.recordatorio')
-                    ->subject('Confirmación de Cita')
+                    ->subject('Recordatorio de Cita')
                     ->with([
-                        'cita' => $this->cita,
+                        'cliente' => $this->cita->cliente->nombre,
+                        'tratamiento' => $this->cita->tratamiento->nombre,
+                        'fecha' => $fecha->format('d-m-Y'),
+                        'hora' => $hora->format('h:i A'),
                     ]);
     }
 }

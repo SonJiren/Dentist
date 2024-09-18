@@ -12,25 +12,20 @@ use App\Jobs\EnviarRecordatorioCita;
 })->purpose('Display an inspiring quote')->hourly();
 
  */
-
- Artisan::command('RecordatorioCita', function () {
+Artisan::command('RecordatorioCita', function () {
     $now = Carbon::now();
-    $fiveMinutesLater = $now->copy()->addMinutes(5);
-    $destinatarios = ['agitokanoh657@gmail.com'];
 
-    $this->info('Fecha y hora actuales: ' . $now->toDateTimeString());
-
-    // Obtener citas que necesitan recordatorio (entre ahora y 5 minutos después)
     $citas = Cita::whereDate('fecha', $now->toDateString())
-                 ->whereBetween('hora', [$now->format('H:i'), $fiveMinutesLater->format('H:i')])
+                 ->whereTime('hora', $now->copy()->addMinutes(5)->format('H:i'))
                  ->get();
 
     if ($citas->isNotEmpty()) {
         foreach ($citas as $cita) {
-            Mail::bcc($destinatarios)->send(new CitaCreada($cita));
-            $this->info("Recordatorio enviado para la cita con ID {$cita->id}.");
+            Mail::to('agitokanoh657@gmail.com')->send(new CitaCreada($cita));
         }
+
+        $this->info('Recordatorios de citas enviados correctamente!');
     } else {
-        $this->info('No hay citas pendientes para enviar recordatorio.');
+        $this->info('No hay citas para recordar en el momento actual.');
     }
-})->purpose('Enviar recordatorio 5 minutos antes de la cita')->everyMinute();
+})->purpose('Envía un correo 5 minutos antes de la hora de la cita')->everyMinute();
